@@ -10,7 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { MapPin, Store as StoreIcon } from 'lucide-react';
-import { City, Store } from '@/app/types';
+import { City } from '@/app/types/index';
 
 interface CitySelectorProps {
   forceSelection?: boolean;

@@ -1,14 +1,36 @@
 'use client';
 
-import {
-  Toast,
-  ToastClose,
-  ToastDescription,
-  ToastProvider,
-  ToastTitle,
-  ToastViewport,
-} from '@/components/ui/toast';
-import { useToast } from '@/components/ui/use-toast';
+// Stub components - these need to be implemented or imported from a UI library
+interface ToastProps {
+  children?: React.ReactNode;
+  key?: string;
+  id?: string;
+}
+
+const Toast = ({ children, ...props }: ToastProps) => (
+  <div {...props}>{children}</div>
+);
+const ToastClose = () => <button>×</button>;
+const ToastDescription = ({ children }: { children: React.ReactNode }) => (
+  <div>{children}</div>
+);
+const ToastProvider = ({ children }: { children: React.ReactNode }) => (
+  <div>{children}</div>
+);
+const ToastTitle = ({ children }: { children: React.ReactNode }) => (
+  <div>{children}</div>
+);
+const ToastViewport = () => <div></div>;
+
+// Stub hook
+const useToast = () => ({
+  toasts: [] as Array<{
+    id: string;
+    title?: string;
+    description?: string;
+    action?: React.ReactNode;
+  }>,
+});
 
 export function Toaster() {
   const { toasts } = useToast();

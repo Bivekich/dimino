@@ -9,7 +9,22 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { MapPin, Clock, Phone } from 'lucide-react';
-import type { Location } from '@/app/types';
+// Определяем тип Location локально
+interface Location {
+  id: string;
+  name: string;
+  address: string;
+  workingHours: string;
+  phone: string;
+  city: string;
+  stores: Array<{
+    id: string;
+    name: string;
+    address: string;
+    phone: string;
+    workingHours: string;
+  }>;
+}
 
 interface LocationModalProps {
   isOpen: boolean;

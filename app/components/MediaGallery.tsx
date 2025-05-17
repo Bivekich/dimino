@@ -2,7 +2,12 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { MediaFile } from '@/app/types';
+export interface MediaFile {
+  id: string;
+  url: string;
+  type: 'image' | 'video';
+  thumbnailUrl?: string;
+}
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';

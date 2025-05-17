@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import prisma from '@/lib/prisma';
-import { authOptions } from '../../auth/[...nextauth]/route';
+import { authOptions } from '../../auth/[...nextauth]/auth';
 import { logAuditAction } from '@/lib/audit';
 
 // Получение пользователя по ID (только для админа)
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -19,7 +19,7 @@ export async function GET(
       );
     }
 
-    const id = params.id;
+    const { id } = await params;
     const user = await prisma.user.findUnique({
       where: { id },
       select: {
@@ -52,7 +52,7 @@ export async function GET(
 // Обновление пользователя (только для админа)
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -64,7 +64,7 @@ export async function PATCH(
       );
     }
 
-    const id = params.id;
+    const { id } = await params;
     const body = await request.json();
     const { name, role } = body;
 
@@ -154,7 +154,7 @@ export async function PATCH(
 // Удаление пользователя (только для админа)
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -166,7 +166,7 @@ export async function DELETE(
       );
     }
 
-    const id = params.id;
+    const { id } = await params;
 
     // Получаем текущего пользователя для логирования
     const existingUser = await prisma.user.findUnique({

@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import prisma from '@/lib/prisma';
-import { authOptions } from '../../auth/[...nextauth]/route';
+import { authOptions } from '../../auth/[...nextauth]/auth';
 import { logAuditAction } from '@/lib/audit';
 
 // Получение продавца по ID (только для админа)
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -19,7 +19,7 @@ export async function GET(
       );
     }
 
-    const id = params.id;
+    const { id } = await params;
     const seller = await prisma.seller.findUnique({
       where: { id },
       include: {
@@ -55,7 +55,7 @@ export async function GET(
 // Обновление продавца (только для админа)
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -67,7 +67,7 @@ export async function PATCH(
       );
     }
 
-    const id = params.id;
+    const { id } = await params;
     const body = await request.json();
     const { cityId, address, phone, workingHours } = body;
 
@@ -147,7 +147,7 @@ export async function PATCH(
 // Удаление продавца (только для админа)
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -159,7 +159,7 @@ export async function DELETE(
       );
     }
 
-    const id = params.id;
+    const { id } = await params;
 
     // Получаем текущего продавца для логирования
     const existingSeller = await prisma.seller.findUnique({

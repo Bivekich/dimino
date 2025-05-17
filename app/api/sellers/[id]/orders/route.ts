@@ -1,18 +1,16 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import prisma from '@/lib/prisma';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth';
 
 interface RouteParams {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>; 
 }
 
 // Получение всех заявок, связанных с товарами продавца
 export async function GET(request: Request, { params }: RouteParams) {
   try {
-    const sellerId = params.id;
+    const { id: sellerId } = await params;
     const session = await getServerSession(authOptions);
 
     // Проверяем авторизацию

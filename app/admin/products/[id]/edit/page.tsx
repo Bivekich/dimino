@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useParams, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface City {
   id: string;
@@ -372,11 +373,13 @@ export default function EditProduct() {
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                   {media.map((item) => (
                     <div key={item.id} className="relative group">
-                      <div className="h-32 bg-gray-100 rounded-md overflow-hidden">
-                        <img
+                      <div className="h-32 bg-gray-100 rounded-md overflow-hidden relative">
+                        <Image
                           src={item.url}
                           alt="Изображение товара"
-                          className="w-full h-full object-cover"
+                          fill
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          className="object-cover"
                         />
                       </div>
                       <button

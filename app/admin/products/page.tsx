@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import Image from 'next/image';
 
 interface Product {
   id: string;
@@ -164,11 +165,15 @@ export default function ProductsPage() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="h-12 w-12 bg-gray-100 rounded overflow-hidden">
                         {product.media.length > 0 ? (
-                          <img
-                            src={product.media[0].url}
-                            alt={product.name}
-                            className="h-full w-full object-cover"
-                          />
+                          <div className="relative h-full w-full">
+                            <Image
+                              src={product.media[0].url}
+                              alt={product.name}
+                              fill
+                              sizes="48px"
+                              className="object-cover"
+                            />
+                          </div>
                         ) : (
                           <div className="h-full w-full flex items-center justify-center text-gray-400">
                             Нет фото

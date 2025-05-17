@@ -1,16 +1,13 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import prisma from '@/lib/prisma';
-import { authOptions } from '../../auth/[...nextauth]/route';
+import { authOptions } from '../../auth/[...nextauth]/auth';
 import { logAuditAction } from '@/lib/audit';
 
 // Получение города по ID
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
-    const id = params.id;
+    const id = request.nextUrl.pathname.split('/').pop();
     const city = await prisma.city.findUnique({
       where: { id },
     });
@@ -30,10 +27,7 @@ export async function GET(
 }
 
 // Обновление города (только для админа)
-export async function PATCH(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -44,7 +38,7 @@ export async function PATCH(
       );
     }
 
-    const id = params.id;
+    const id = request.nextUrl.pathname.split('/').pop();
     const body = await request.json();
     const { name } = body;
 
@@ -85,7 +79,7 @@ export async function PATCH(
     // Логируем действие в аудит
     await logAuditAction({
       action: 'UPDATE',
-      entityId: id,
+      entityId: id || '',
       entityType: 'CITY',
       description: `Обновлен город "${updatedCity.name}"`,
       userId: session.user.id,
@@ -102,10 +96,7 @@ export async function PATCH(
 }
 
 // Удаление города (только для админа)
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -116,7 +107,7 @@ export async function DELETE(
       );
     }
 
-    const id = params.id;
+    const id = request.nextUrl.pathname.split('/').pop();
 
     // Проверяем существование города
     const existingCity = await prisma.city.findUnique({
@@ -163,7 +154,7 @@ export async function DELETE(
     // Логируем действие в аудит
     await logAuditAction({
       action: 'DELETE',
-      entityId: id,
+      entityId: id || '',
       entityType: 'CITY',
       description: `Удален город "${existingCity.name}"`,
       userId: session.user.id,

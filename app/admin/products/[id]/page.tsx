@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useParams, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface Media {
   id: string;
@@ -147,10 +148,12 @@ export default function ProductDetails() {
             {product.media.length > 0 ? (
               <div className="space-y-4">
                 <div className="h-80 bg-gray-100 relative rounded-lg overflow-hidden">
-                  <img
+                  <Image
                     src={product.media[currentImageIndex].url}
                     alt={product.name}
-                    className="w-full h-full object-contain"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-contain"
                   />
                 </div>
                 {product.media.length > 1 && (
@@ -165,11 +168,15 @@ export default function ProductDetails() {
                             : 'border-transparent'
                         }`}
                       >
-                        <img
-                          src={media.url}
-                          alt={`${product.name} - изображение ${index + 1}`}
-                          className="h-full w-full object-cover rounded"
-                        />
+                        <div className="relative h-full w-full">
+                          <Image
+                            src={media.url}
+                            alt={`${product.name} - изображение ${index + 1}`}
+                            fill
+                            sizes="64px"
+                            className="object-cover rounded"
+                          />
+                        </div>
                       </button>
                     ))}
                   </div>

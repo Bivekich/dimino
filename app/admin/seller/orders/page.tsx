@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Table,
   TableBody,
@@ -25,6 +26,13 @@ import {
 import { Button } from '@/components/ui/button';
 import { Loader2, Eye, Clock, CheckCircle, XCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface OrderItem {
   id: string;
@@ -58,6 +66,7 @@ export default function SellerOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -101,6 +110,43 @@ export default function SellerOrdersPage() {
   const handleViewOrder = (order: Order) => {
     setSelectedOrder(order);
     setIsDialogOpen(true);
+  };
+
+  const handleUpdateStatus = async (orderId: string, newStatus: Order['status']) => {
+    if (!selectedOrder) return;
+
+    setUpdatingStatus(true);
+    try {
+      const response = await fetch(`/api/orders/${orderId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (response.ok) {
+        const updatedOrder = await response.json();
+
+        // Обновляем заказ в локальном состоянии
+        setOrders(orders.map(order => 
+          order.id === updatedOrder.id ? updatedOrder : order
+        ));
+
+        // Обновляем выбранный заказ
+        setSelectedOrder(updatedOrder);
+
+        toast.success('Статус заказа успешно обновлен');
+      } else {
+        const error = await response.json();
+        toast.error(error.error || 'Ошибка при обновлении статуса заказа');
+      }
+    } catch (error) {
+      console.error('Ошибка при обновлении статуса заказа:', error);
+      toast.error('Не удалось обновить статус заказа');
+    } finally {
+      setUpdatingStatus(false);
+    }
   };
 
   const getStatusBadge = (status: Order['status']) => {
@@ -272,7 +318,32 @@ export default function SellerOrdersPage() {
                   </div>
                   <div className="grid grid-cols-2">
                     <dt className="text-gray-600">Статус:</dt>
-                    <dd>{getStatusBadge(selectedOrder.status)}</dd>
+                    <dd className="flex items-center space-x-2">
+                      {getStatusBadge(selectedOrder.status)}
+                      <Select
+                        defaultValue={selectedOrder.status}
+                        onValueChange={(value) => 
+                          handleUpdateStatus(
+                            selectedOrder.id, 
+                            value as Order['status']
+                          )
+                        }
+                        disabled={updatingStatus}
+                      >
+                        <SelectTrigger className="w-[180px] ml-2">
+                          <SelectValue placeholder="Изменить статус" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="PENDING">Ожидает обработки</SelectItem>
+                          <SelectItem value="PROCESSING">В обработке</SelectItem>
+                          <SelectItem value="COMPLETED">Выполнено</SelectItem>
+                          <SelectItem value="CANCELLED">Отменено</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {updatingStatus && (
+                        <Loader2 className="h-4 w-4 animate-spin ml-2" />
+                      )}
+                    </dd>
                   </div>
                 </dl>
 
@@ -297,11 +368,13 @@ export default function SellerOrdersPage() {
                       className="flex items-center space-x-3 border rounded-md p-2"
                     >
                       {item.product.media[0] && (
-                        <div className="h-12 w-12 bg-gray-100 rounded overflow-hidden flex-shrink-0">
-                          <img
+                        <div className="h-12 w-12 bg-gray-100 rounded overflow-hidden flex-shrink-0 relative">
+                          <Image
                             src={item.product.media[0].url}
                             alt={item.product.name}
-                            className="h-full w-full object-cover"
+                            fill
+                            sizes="48px"
+                            className="object-cover"
                           />
                         </div>
                       )}

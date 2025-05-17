@@ -63,3 +63,10 @@ export interface City {
   name: string;
   stores?: Store[];
 }
+
+export interface MediaFile {
+  id: string;
+  url: string;
+  type: 'image' | 'video';
+  thumbnailUrl?: string;
+}

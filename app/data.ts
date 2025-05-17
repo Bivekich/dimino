@@ -134,6 +134,10 @@ export const mockDishes: Dish[] = [
     inStock: true,
     preOrderOnly: false,
     availableInStores: ['msk-1', 'msk-2', 'spb-1'],
+    availability: {
+      inStock: true,
+      stores: ['msk-1', 'msk-2', 'spb-1'],
+    },
   },
   {
     id: '2',
@@ -157,6 +161,10 @@ export const mockDishes: Dish[] = [
     inStock: true,
     preOrderOnly: false,
     availableInStores: ['msk-1'],
+    availability: {
+      inStock: true,
+      stores: ['msk-1'],
+    },
   },
   {
     id: '3',
@@ -180,5 +188,9 @@ export const mockDishes: Dish[] = [
     inStock: false,
     preOrderOnly: true,
     availableInStores: ['spb-1', 'spb-2'],
+    availability: {
+      inStock: false,
+      stores: ['spb-1', 'spb-2'],
+    },
   },
 ];

@@ -9,16 +9,24 @@ export interface Store {
   name: string;
   address: string;
   phone: string;
+  workingHours?: string;
 }
 
 export interface Media {
+  id?: string;
   url: string;
   type: 'image' | 'video';
+  thumbnailUrl?: string;
 }
 
 export interface Fish {
   id: string;
   name: string;
+  description?: string;
+  media?: Media[];
+  inStock?: boolean;
+  preOrderOnly?: boolean;
+  availableInCities?: string[];
 }
 
 export interface RelatedDish {
@@ -36,6 +44,8 @@ export interface Dish {
   media: Media[];
   fishId: string;
   inStock: boolean;
+  preOrderOnly?: boolean;
+  availableInStores?: string[];
   availability: {
     inStock: boolean;
     stores: string[]; // ID магазинов, где товар в наличии

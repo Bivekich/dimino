@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import DishDetails from '@/app/components/ui/DishDetails';
 import { Dish } from '@/app/types';
 
-export default function DishPage({ params }: { params: { id: string } }) {
+export default function DishPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const [dish, setDish] = useState<Dish | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -15,7 +16,7 @@ export default function DishPage({ params }: { params: { id: string } }) {
         setIsLoading(true);
         setError(null);
 
-        const response = await fetch(`/api/products/${params.id}`);
+        const response = await fetch(`/api/products/${id}`);
 
         if (!response.ok) {
           throw new Error('Не удалось загрузить информацию о товаре');
@@ -51,10 +52,10 @@ export default function DishPage({ params }: { params: { id: string } }) {
       }
     };
 
-    if (params.id) {
+    if (id) {
       fetchDish();
     }
-  }, [params.id]);
+  }, [id]);
 
   if (isLoading) {
     return (
@@ -74,7 +75,7 @@ export default function DishPage({ params }: { params: { id: string } }) {
           Товар не найден
         </div>
         <div className="text-center text-zinc-600 mt-2">
-          Запрошенный товар с ID &ldquo;{params.id}&rdquo; не существует или
+          Запрошенный товар с ID &ldquo;{id}&rdquo; не существует или
           удален
         </div>
       </div>

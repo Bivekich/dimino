@@ -4,10 +4,10 @@ import prisma from '@/lib/prisma';
 // Получение всех магазинов в конкретном городе
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const cityId = params.id;
+    const { id: cityId } = await params;
 
     // Проверяем существование города
     const city = await prisma.city.findUnique({

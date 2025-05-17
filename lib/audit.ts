@@ -3,7 +3,7 @@ import { AuditAction, EntityType } from '@prisma/client';
 
 interface AuditLogParams {
   action: AuditAction;
-  entityId: string;
+  entityId: string | null | undefined;
   entityType: EntityType;
   description: string;
   userId: string;
@@ -23,7 +23,7 @@ export const logAuditAction = async ({
     await prisma.audit.create({
       data: {
         action,
-        entityId,
+        entityId: entityId || '',
         entityType,
         description,
         userId,
@@ -48,13 +48,14 @@ export const getActionDescription = (
     DELETE: 'удален',
   };
 
-  const entityText = {
+  const entityText: Record<EntityType, string> = {
     USER: 'Пользователь',
     SELLER: 'Продавец',
     CITY: 'Город',
     FISH: 'Вид рыбы',
     PRODUCT: 'Товар',
     MEDIA: 'Медиа',
+    ORDER: 'Заказ',
   };
 
   return `${entityText[entityType]} "${entityName}" был ${actionText[action]}`;

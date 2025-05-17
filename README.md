@@ -1,3 +1,5 @@
+# Dimino
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
@@ -20,6 +22,67 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Deployment with Docker Compose
+
+This project can be deployed using Docker Compose. Portainer can be used externally for container management.
+
+### Prerequisites
+
+- Docker and Docker Compose installed on your server
+- External PostgreSQL database (connection details needed)
+
+### Deployment Steps
+
+1. Clone the repository to your server:
+   ```bash
+   git clone <repository-url>
+   cd dimino
+   ```
+
+2. Create a `.env` file based on the `.env.example` template:
+   ```bash
+   cp .env.example .env
+   ```
+
+3. Edit the `.env` file with your database connection details and other environment variables:
+   ```
+   DATABASE_URL="postgresql://username:password@hostname:5432/database_name"
+   NEXTAUTH_SECRET="your-secure-random-string"
+   NEXTAUTH_URL="https://your-domain.com"
+   ```
+
+4. Build and start the containers:
+   ```bash
+   docker-compose up -d
+   ```
+
+5. Access the application at `http://your-server-ip:3002` or your configured domain.
+
+### Database Setup
+
+This application uses an external PostgreSQL database. Make sure your database is properly set up and accessible from the Docker container.
+
+To initialize the database with the required schema:
+
+```bash
+docker-compose exec app npx prisma migrate deploy
+```
+
+To seed the database with initial data (including admin account):
+
+```bash
+docker-compose exec app npm run seed
+```
+
+### Admin Account
+
+After running the seed command, an admin account will be created with the following credentials:
+
+- Email: admin@dimino.ru
+- Password: admin123
+
+**Important:** Change the admin password after the first login for security reasons.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
@@ -28,10 +91,3 @@ To learn more about Next.js, take a look at the following resources:
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# dimino
