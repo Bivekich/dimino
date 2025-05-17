@@ -28,6 +28,8 @@ ENV NEXT_TELEMETRY_DISABLED 1
 
 # Build the application
 RUN npm run build
+# For debugging - list contents to verify standalone was created
+RUN ls -la .next
 
 # Production image, copy all the files and run next
 FROM base AS runner
@@ -41,11 +43,10 @@ RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
 
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
+# Ensure we have the entire .next directory
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 
-# Automatically leverage output traces to reduce image size
+# For standalone mode specifically
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 

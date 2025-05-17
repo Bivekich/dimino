@@ -1,0 +1,36 @@
+# Версионный контроль
+.git
+.github
+.gitignore
+
+# Зависимости
+node_modules
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Тесты
+coverage
+.nyc_output
+
+# Сборки
+# .next - не игнорируем, нужна для standalone режима
+out
+build
+dist
+
+# Локальные файлы
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Редакторы и IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Системные файлы
+.DS_Store
+Thumbs.db
